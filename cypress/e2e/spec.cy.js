@@ -40,10 +40,19 @@ describe('url shortener', () => {
     cy.get("input").last().should("have.value","https://github.com/turingschool-examples/url-shortener-api")
   })
 
+  it('should not be able to submit incomplete  form', () => {
+    cy.get("input").last().type("new added backend repo")
+    cy.get("button").first().click()
+    cy.get('input[name="title"]').then(($input) => {
+      expect($input[0].validationMessage).to.eq("Please fill out this field.")
+    })
+   
+  })
+
   it("should shorten url and show on DOM when submitted", () => {
     cy.get("input").first().type("new added backend repo")
     cy.get("input").last().type("https://github.com/turingschool-examples/url-shortener-api")
-    cy.get("button").click()
+    cy.get("button").first().click()
     cy.get(".url").last().contains("new added backend repo")
     cy.get(".url").last().contains("https://github.com/turingschool-examples/url-shortener-api")
     cy.get(".url").last().contains("http://localhost:3001/useshorturl/3")
@@ -67,8 +76,28 @@ it("should show error message if network request fails on post", () => {
   cy.visit('http://localhost:3000/')
   cy.get("input").first().type("new added backend repo")
   cy.get("input").last().type("https://github.com/turingschool-examples/url-shortener-api")
-  cy.get("button").click()
+  cy.get("button").first().click()
   cy.contains("something went wrong!")
 })
 
+it("should be able to delete", () => {
+  cy.intercept("DELETE", 'http://localhost:3001/api/v1/urls/1', {
+  statusCode:204,
+  })
+  cy.intercept("DELETE", 'http://localhost:3001/api/v1/urls/2', {
+  statusCode:204,
+  })
+  cy.get("button").eq(1).click()
+  cy.get("button").eq(1).click()
+  cy.get(".url").should("not.exist")
+})
+
+it("should show error message if delete fails", () => {
+  cy.intercept("DELETE", 'http://localhost:3001/api/v1/urls/1', {
+  statusCode:404,
+  body:"cypress force error"
+  })
+  cy.get("button").eq(1).click()
+  cy.contains("something went wrong!")
+})
 })
