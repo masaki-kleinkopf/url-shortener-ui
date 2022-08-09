@@ -49,5 +49,13 @@ describe('url shortener', () => {
     cy.get(".url").last().contains("http://localhost:3001/useshorturl/3")
   })
 
+  it("should show error message if network request fails", () => {
+    cy.intercept("GET", 'http://localhost:3001/api/v1/urls', {
+      statusCode:404,
+      body:"cypress error"
+      })
+      cy.contains("something went wrong!")
+  })
+
 
 })

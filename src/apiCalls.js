@@ -1,6 +1,12 @@
  const getUrls = () => {
   return fetch('http://localhost:3001/api/v1/urls')
-      .then(response => response.json())
+    .then(response=>{
+      if (!response.ok) {
+        throw Error(response.status)
+      } else {
+        return response.json()
+      }
+    })
 }
 
 const postUrls = (url) => {
@@ -11,7 +17,13 @@ const postUrls = (url) => {
     },
     body:(JSON.stringify(url))
   })
-    .then(response=>response.json())
+    .then(response=>{
+      if (!response.ok) {
+        throw Error(response.status)
+      } else {
+        return response.json()
+      }
+    })
 }
 
 export {getUrls, postUrls}
