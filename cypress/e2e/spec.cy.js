@@ -66,8 +66,8 @@ it("should show error message if network request fails on post", () => {
   })
   cy.visit('http://localhost:3000/')
   cy.get("input").first().type("new added backend repo")
-    cy.get("input").last().type("https://github.com/turingschool-examples/url-shortener-api")
-    cy.get("button").click()
+  cy.get("input").last().type("https://github.com/turingschool-examples/url-shortener-api")
+  cy.get("button").click()
   cy.contains("something went wrong!")
 })
 
